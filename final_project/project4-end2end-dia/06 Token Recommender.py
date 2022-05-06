@@ -35,7 +35,7 @@ df_gold=spark.sql("SELECT * FROM g03_db.GOLD_TABLE")
 
 # COMMAND ----------
 
-df_gold.head()
+df_gold.display()
 
 # COMMAND ----------
 

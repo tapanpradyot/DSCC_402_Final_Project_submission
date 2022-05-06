@@ -97,7 +97,13 @@ user_recs=model.recommendForAllUsers(20).show(10)
 
 # COMMAND ----------
 
-MY_EXPERIMENT = "/Users/" + dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get() + "/" + "g03_experiment_88/"
+import uuid
+model_name=f'ETH_AS_{uuid.uuid4().hex[:10]}'
+model_name
+
+# COMMAND ----------
+
+MY_EXPERIMENT = "/Users/" + dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get() + "/" + model_name
 mlflow.set_experiment(MY_EXPERIMENT)
 experiment = mlflow.get_experiment_by_name(MY_EXPERIMENT)
 
@@ -139,7 +145,7 @@ def train_ALS(regParam_opt, rank_opt):
         mlflow.set_tags({'group': '	G03', 'class': 'DSCC-402'})
         mlflow.log_params({'regParam':regParam_opt, 'rank': rank_opt})
         mlflow.spark.log_model(spark_model=model, signature=signature,
-                               artifact_path='als-model', registered_model_name="ModelAS1"+str(rank_opt))
+                               artifact_path='als-model', registered_model_name=model_name+str(rank_opt))
         
         mlflow.log_metric("RMSE_test", rmse)
         mlflow.log_metric("RMSE_train", rmse_train)
@@ -193,9 +199,7 @@ final_model, val_rmse,RunID = train_ALS(best_regParam,best_rank)
 
 # COMMAND ----------
 
- import uuid
- model_name=f'ETH_AS_{uuid.uuid4().hex[:10]}'
- model_name
+
 
 # COMMAND ----------
 
@@ -300,10 +304,6 @@ dfp = dfp.toDF(*map(str, range(len(dfp.columns)))).drop("0","1","2").toDF(*dfp.c
 # COMMAND ----------
 
 dfp.display()
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 
